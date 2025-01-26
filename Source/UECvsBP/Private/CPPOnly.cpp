@@ -25,7 +25,7 @@ ACPPOnly::ACPPOnly()
 	CubeMesh->SetGenerateOverlapEvents(true);
 	CubeMesh->OnComponentBeginOverlap.AddDynamic(this, &ACPPOnly::OnOverlapBegin);
 
-	FString LoopCountString = FString::Printf(TEXT("LoopCount: %d"), LoopCount);
+	FString LoopCountString = FString::Printf(TEXT("Loop %d"), LoopCount);
 
 	TextRenderComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("LoopCountTextext"));
 	TextRenderComponent->SetupAttachment(RootComponent);
@@ -38,6 +38,8 @@ void ACPPOnly::BeginPlay()
 {
 	Super::BeginPlay();
 	UE_LOG(LogTemp, Warning, TEXT("Hello i am alive v1.0"));
+	FString LoopCountString = FString::Printf(TEXT("Loop %d"), LoopCount);
+	TextRenderComponent->SetText(FText::FromString(LoopCountString));
 }
 
 // Called every frame
@@ -51,24 +53,27 @@ void ACPPOnly::Tick(float DeltaTime)
 // our loop function
 void ACPPOnly::LoopTime()
 {
-	// temp vars
-	int32 temp;
-	double end;
+    // temp vars
+    int32 temp;
+    double start;
+    double end;
 
-	// start trace
-	FScopeCycleCounterUObject ScopeCounter(this);
+    // start trace
+    FScopeCycleCounterUObject ScopeCounter(this);
 
-	UGameplayStatics::GetAccurateRealTime(temp, start);
-	UE_LOG(LogTemp, Warning, TEXT("Start time is: %d"), start);
-	for (int i = 0; i < LoopCount; i++)
-	{
-		if (GEngine)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("CPP loop is: %d"), i);
-		}
-	}
-	UGameplayStatics::GetAccurateRealTime(temp, end);
-	UE_LOG(LogTemp, Warning, TEXT("end time is: %d"), start - end);
+    UGameplayStatics::GetAccurateRealTime(temp, start);
+    //UE_LOG(LogTemp, Warning, TEXT("Start time is: %f"), start);
+    for (int i = 0; i < LoopCount; i++)
+    {
+        if (GEngine)
+        {
+            FString LoopText = FString::Printf(TEXT("CPP loop is: %d"), i);
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, LoopText);
+        }
+    }
+    UGameplayStatics::GetAccurateRealTime(temp, end);
+    FString EndText = FString::Printf(TEXT("end time is: %f"), end - start);
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, EndText);
 }
 
 // Called when the CubeMesh overlaps another actor
