@@ -20,9 +20,8 @@ public:
 	// Sets default values for this actor's properties
 	ACPPOnly();
 	// create a public variable for us to us
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = ExposedVariables)// only change the default value
-		int LoopCount = 5000;
-	double start;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ExposedVariables)// only change the default value
+	int LoopCount = 5000;
 
 protected:
 	// Called when the game starts or when spawned
